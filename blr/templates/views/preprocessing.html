@@ -1,0 +1,217 @@
+{% extends "base.html" %} {% block content %}
+<div class="container">
+  <div class="row py-4">
+    <div class="col-md-12">
+      <h2 class="text-center fw-bold">Preprocessing</h2>
+      <p class="text-center fw-light">Data Cleaning, Data Transformation, Data Scaling</p>
+      <!-- {{ data }} -->
+    </div>
+    {% for msg in messages %}
+    <div class="alert alert-success" role="alert">{{ msg }}</div>
+    {% endfor %}
+  </div>
+  <div class="row">
+    <div class="col-md-12 mb-3">
+      <h4>Data Survey Response</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Sekolah</th>
+              <th>Responden</th>
+              <th>Peran</th>
+              <th>P1</th>
+              <th>P2</th>
+              <th>P3</th>
+              <th>P4</th>
+              <th>P5</th>
+              <th>P6</th>
+              <th>T1</th>
+              <th>T2</th>
+              <th>T3</th>
+              <th>T4</th>
+              <th>T5</th>
+              <th>T6</th>
+              <th>I1</th>
+              <th>I2</th>
+              <th>I3</th>
+              <th>I4</th>
+              <th>I5</th>
+              <th>I6</th>
+              <th>SD1</th>
+              <th>SD2</th>
+              <th>SD3</th>
+              <th>SD4</th>
+              <th>SD5</th>
+              <th>SD6</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in result_data_survey %}
+            <tr>
+              <td>{{ i.Timestamp }}</td>
+              <td>{{ i.Sekolah }}</td>
+              <td>{{ i.Responden }}</td>
+              <td>{{ i.Peran }}</td>
+              <td>{{ i.P1 }}</td>
+              <td>{{ i.P2 }}</td>
+              <td>{{ i.P3 }}</td>
+              <td>{{ i.P4 }}</td>
+              <td>{{ i.P5 }}</td>
+              <td>{{ i.P6 }}</td>
+              <td>{{ i.T1 }}</td>
+              <td>{{ i.T2 }}</td>
+              <td>{{ i.T3 }}</td>
+              <td>{{ i.T4 }}</td>
+              <td>{{ i.T5 }}</td>
+              <td>{{ i.T6 }}</td>
+              <td>{{ i.I1 }}</td>
+              <td>{{ i.I2 }}</td>
+              <td>{{ i.I3 }}</td>
+              <td>{{ i.I4 }}</td>
+              <td>{{ i.I5 }}</td>
+              <td>{{ i.I6 }}</td>
+              <td>{{ i.SD1 }}</td>
+              <td>{{ i.SD2 }}</td>
+              <td>{{ i.SD3 }}</td>
+              <td>{{ i.SD4 }}</td>
+              <td>{{ i.SD5 }}</td>
+              <td>{{ i.SD6 }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Data Cleaning -->
+  <div class="col-md-12 mb-3">
+    <h4>Data Cleaning</h4>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Sekolah</th>
+            <th>P1</th>
+            <th>P2</th>
+            <th>P3</th>
+            <th>P4</th>
+            <th>P5</th>
+            <th>P6</th>
+            <th>T1</th>
+            <th>T2</th>
+            <th>T3</th>
+            <th>T4</th>
+            <th>T5</th>
+            <th>T6</th>
+            <th>I1</th>
+            <th>I2</th>
+            <th>I3</th>
+            <th>I4</th>
+            <th>I5</th>
+            <th>I6</th>
+            <th>SD1</th>
+            <th>SD2</th>
+            <th>SD3</th>
+            <th>SD4</th>
+            <th>SD5</th>
+            <th>SD6</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in result_data_cleaning %}
+          <tr>
+            <td>{{ i.Sekolah }}</td>
+            <td>{{ i.P1 }}</td>
+            <td>{{ i.P2 }}</td>
+            <td>{{ i.P3 }}</td>
+            <td>{{ i.P4 }}</td>
+            <td>{{ i.P5 }}</td>
+            <td>{{ i.P6 }}</td>
+            <td>{{ i.T1 }}</td>
+            <td>{{ i.T2 }}</td>
+            <td>{{ i.T3 }}</td>
+            <td>{{ i.T4 }}</td>
+            <td>{{ i.T5 }}</td>
+            <td>{{ i.T6 }}</td>
+            <td>{{ i.I1 }}</td>
+            <td>{{ i.I2 }}</td>
+            <td>{{ i.I3 }}</td>
+            <td>{{ i.I4 }}</td>
+            <td>{{ i.I5 }}</td>
+            <td>{{ i.I6 }}</td>
+            <td>{{ i.SD1 }}</td>
+            <td>{{ i.SD2 }}</td>
+            <td>{{ i.SD3 }}</td>
+            <td>{{ i.SD4 }}</td>
+            <td>{{ i.SD5 }}</td>
+            <td>{{ i.SD6 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Data Transformation -->
+  <div class="col-md-12 mb-3">
+    <h4>Data Transformation</h4>
+    <div class="table-responsive">
+      <!-- {{ result_data_transformation }} -->
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Sekolah</th>
+            <th>People</th>
+            <th>Technology</th>
+            <th>Innovation</th>
+            <th>Self Development</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in result_data_transformation %}
+          <tr>
+            <td>{{ i.Sekolah }}</td>
+            <td>{{ i.people }}</td>
+            <td>{{ i.technology }}</td>
+            <td>{{ i.innovation }}</td>
+            <td>{{ i.self_development }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Data Transformation -->
+  <div class="col-md-12 mb-3">
+    <h4>Data Scaling</h4>
+    <div class="table-responsive">
+      <!-- {{ result_data_scaling }} -->
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>People</th>
+            <th>Technology</th>
+            <th>Innovation</th>
+            <th>Self Development</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in result_data_scaling %}
+          <tr>
+            <td>{{ i.people }}</td>
+            <td>{{ i.technology }}</td>
+            <td>{{ i.innovation }}</td>
+            <td>{{ i.self_development }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Button to Data Cleaning -->
+  <div class="col-md-12 d-flex justify-content-center pb-md-5">
+    <a class="btn btn-dark" href="{% url 'processing' %}">Processing</a>
+  </div>
+</div>
+{% endblock content %}

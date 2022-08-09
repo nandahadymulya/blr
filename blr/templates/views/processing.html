@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <div class="row py-4">
+    <div class="col-md-12">
+      <h2 class="text-center fw-bold">Proccessing</h2>
+      <p class="text-center fw-light">K-Means Algorithm & Support Vector Machines</p>
+    </div>
+  </div>
+  <div class="col-md-12 mb-3">
+    <h4>K-Means</h4>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Sekolah</th>
+            <th>People</th>
+            <th>Technology</th>
+            <th>Innovation</th>
+            <th>Self Development</th>
+            <th>Cluster Label</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in result_json_kmeans %}
+          <tr>
+            <td>{{ i.Sekolah }}</td>
+            <td>{{ i.people }}</td>
+            <td>{{ i.technology }}</td>
+            <td>{{ i.innovation }}</td>
+            <td>{{ i.self_development }}</td>
+            <td>{{ i.class_new }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <h4>SSE</h4>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Sekolah</th>
+            <th>Cluster Label</th>
+            <th>SSE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in result_json_sse %}
+          <tr>
+            <td>{{ i.Sekolah }}</td>
+            <td>{{ i.class_new }}</td>
+            <td>{{ i.sse }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-md-12 mb-3">
+    <h4>Support Vector Machines</h4>
+    <p>Train Model</p>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Accuracy</th>
+            <th>People</th>
+            <th>Technology</th>
+            <th>Innovation</th>
+            <th>Self Development</th>
+            <th>Cluster Label</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in result_json_kmeans %}
+          <tr>
+            <td>{{ i.Sekolah }}</td>
+            <td>{{ i.people }}</td>
+            <td>{{ i.technology }}</td>
+            <td>{{ i.innovation }}</td>
+            <td>{{ i.self_development }}</td>
+            <td>{{ i.class_new }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-md-12 mb-3">
+    <h4>Confusion Matrix</h4>
+  </div>
+</div>
+{% endblock content %}
