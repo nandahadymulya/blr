@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container" style="height: 88vh; margin-bottom: 2px;">
+  <div class=" row py-md-4">
+    <div class="col-md-12">
+      <h2 class="text-center fw-bold">Predict Result Blended Learning Readiness</h2>
+      <p class="text-center fw-light">
+        for Junior High Schools in Padang, Sumatera Barat.
+      </p>
+    </div>
+  </div>
+  <div class="row d-flex justify-content-center py-md-4">
+    <div class="col-md-10 align-self-center mb-3">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th colspan="6" class="text-center">Result</th>
+          </tr>
+          <tr>
+            <th>School Name</th>
+            <th>People</th>
+            <th>Technology</th>
+            <th>Innovation</th>
+            <th>Self Development</th>
+            <th>Predict Class</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in result_json_data_predict %}
+          <tr>
+            <td>{{ i.name }}</td>
+            <td>{{ i.people }}</td>
+            <td>{{ i.technology }}</td>
+            <td>{{ i.innovation }}</td>
+            <td>{{ i.self_development }}</td>
+            <td>{{ i.predict_class }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock content %}

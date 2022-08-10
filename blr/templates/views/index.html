@@ -29,7 +29,7 @@
           <div class="mb-3">
             <label for="form" class="form-label h5 mb-3">Upload a <span class="text-muted fw-light">csv</span>
               file</label>
-            {% csrf_token %} {{ form }}
+            {% csrf_token %} {{ form.as_p }}
           </div>
           <div>
             <button type="submit" class="btn btn-dark">Upload</button>

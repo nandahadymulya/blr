@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container" style="height: 88vh; margin-bottom: 2px;">
+  <div class=" row py-md-4">
+    <div class="col-md-12">
+      <h2 class="text-center fw-bold">Predict Blended Learning Readiness</h2>
+      <p class="text-center fw-light">
+        for Junior High Schools in Padang, Sumatera Barat.
+      </p>
+    </div>
+  </div>
+  <div class="row d-flex justify-content-center py-md-4">
+    <div class="col-md-6 align-self-center mb-3">
+      <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+          {% csrf_token %} {{ form.as_p }}
+        </div>
+        <div>
+          <button type="submit" class="btn btn-dark">Predict</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}

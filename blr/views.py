@@ -1,8 +1,7 @@
-from multiprocessing import context
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib import messages
-from .forms import UploadFileForm
+from .forms import UploadFileForm, PredictForm
 from .functions import handle_uploaded_file
 
 import pandas as pd
@@ -11,6 +10,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split
 from sklearn import svm
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score
 
 import json
 # global data
@@ -20,6 +20,7 @@ def index(request):
         if form.is_valid():
           handle_uploaded_file(request.FILES['file'])
           message = messages.success(request, 'File uploaded successfully')
+
           data = pd.read_csv('blr/uploads/'+request.FILES['file'].name)
 
           # output data survey
@@ -100,9 +101,25 @@ def processing(request):
     )
     # Fit KMeans
     kmeans.fit(df)
-    # Predict
+    #  The lowest SSE value
+    lowest_sse = kmeans.inertia_
+    # The number of clusters
+    n_clusters = kmeans.n_clusters
+    # The cluster centroids
+    # centroids = kmeans.cluster_centers_
+    # The cluster labels
     cluster = kmeans.labels_
+    #  plot detail kmeans
+    json_detail_kmeans = {
+      'detail': [
+        {
+          'lowest_sse': lowest_sse,
+          'n_clusters': n_clusters,
+        },
+      ]
+    }
 
+    #  Menampung cluster pada column class
     dataset['class'] = cluster
     # Labeling
     def labeling(df):
@@ -113,6 +130,7 @@ def processing(request):
     
     dataset['class_new']=dataset.apply(labeling,axis=1)
     result_kmeans = dataset.loc[:, ['Sekolah','people','technology','innovation','self_development','class_new']]
+
     # output kmeans
     json_kmeans = result_kmeans.reset_index().to_json(orient='records')
     result_json_kmeans = []
@@ -127,39 +145,132 @@ def processing(request):
         kmeans.fit(df)
         sse_ = kmeans.inertia_
         sse.append(sse_)
+
     # plot sse
     dataset['sse']=sse
+
     # output SSE
     result_sse = dataset.loc[:, ['Sekolah','class_new','sse']]
     json_sse = result_sse.reset_index().to_json(orient='records')
     result_json_sse = []
     result_json_sse = json.loads(json_sse)
 
-
-
     #  SVM
     svm_X = df[['people','technology','innovation','self_development']]
     svm_y = dataset[['class_new']]
-
-    # 
     svm_y = svm_y.replace(['Siap', 'Belum Siap'], [1, -1])
+
+    # train test split
     X_train, X_test, y_train, y_test = train_test_split(svm_X, svm_y, test_size = 0.2)
+
+    # Instance SVM
     classifier = svm.SVC(kernel = 'linear')
 
-    classifier.fit(X_train, y_train)
+    # Fit SVM
+    classifier.fit(X_train, y_train.values.ravel())
+    
+    # Predict SVM
     y_predict = classifier.predict(X_test)
+    
+    # Confusion Matrix
+    cm = confusion_matrix(y_test, y_predict)
+    accuracy = accuracy_score(y_test, y_predict)
+    precision = precision_score(y_test, y_predict)
+    recall = recall_score(y_test, y_predict)
+
+    #output X_train
+    json_X_train = X_train.reset_index().to_json(orient='records')
+    result_json_X_train = []
+    result_json_X_train = json.loads(json_X_train)
+
+    #output y_train
+    json_y_train = y_train.reset_index().to_json(orient='records')
+    result_json_y_train = []
+    result_json_y_train = json.loads(json_y_train)
+
+    # output X_test
+    json_X_test = X_test.reset_index().to_json(orient='records')
+    result_json_X_test = []
+    result_json_X_test = json.loads(json_X_test)
+
+    # output y_test
+    json_y_test = y_test.reset_index().to_json(orient='records')
+    result_json_y_test = []
+    result_json_y_test = json.loads(json_y_test)
+
+    # output y_predict
+    y_predict_df = pd.DataFrame(y_predict)
+    y_predict_df = y_predict_df.replace([1, -1], ['Siap', 'Belum Siap'])
+    json_y_predict = y_predict_df.reset_index().to_json(orient='records')
+    result_json_y_predict = []
+    result_json_y_predict = json.loads(json_y_predict)
+    
     # output svm
-    print(y_predict)
+    # print(y_predict)
+    result_svm = dataset.loc[:, ['Sekolah','class_new']]
+    json_svm = result_svm.reset_index().to_json(orient='records')
+    result_json_svm = {}
+    result_json_svm = json.loads(json_svm)
+
+    # output confusion matrix
+    cm_df = pd.DataFrame(cm)
+    json_cm = cm_df.to_json(orient='records')
+    result_json_cm = [[]]
+    result_json_cm = json.loads(json_cm)
 
     template = 'views/processing.html'
     context = {
       'dataset': dataset,
       'df': df,
       'result_json_kmeans': result_json_kmeans,
+      'json_detail_kmeans': json_detail_kmeans,
       'result_json_sse': result_json_sse,
+      'result_json_X_train': result_json_X_train,
+      'result_json_y_train': result_json_y_train,
+      'result_json_X_test': result_json_X_test,
+      'result_json_y_test': result_json_y_test,
+      'result_json_y_predict': result_json_y_predict,
+      'result_json_svm': result_json_svm,
+      'result_json_cm': result_json_cm,
+      'accuracy': accuracy,
+      'precision': precision,
+      'recall': recall,
     }
-    
-
     return render(request, template, context)
-def about(request):
-    return render(request, 'views/about.html')
+
+def predict(request):
+    if request.method == 'POST':
+      form = PredictForm(request.POST)
+      if form.is_valid():
+        name = form.cleaned_data['name']
+        people = form.cleaned_data['people']
+        technology = form.cleaned_data['technology']
+        innovation = form.cleaned_data['innovation']
+        self_development = form.cleaned_data['self_development']
+        data_predict = {
+          'name': name,
+          'people': people,
+          'technology': technology,
+          'innovation': innovation,
+          'self_development': self_development,
+        }
+        df_predict = pd.DataFrame(data_predict, index=[0])
+
+        json_data_predict = df_predict.reset_index().to_json(orient='records')
+        result_json_data_predict = []
+        result_json_data_predict = json.loads(json_data_predict)
+        # print(df_predict)
+        template = 'views/result.html'
+        context = {
+          'result_json_data_predict': result_json_data_predict,
+        }
+      messages.success(request, 'Form Submitted Successfully!')
+      return render(request, template, context)
+
+    else:
+      form = PredictForm()
+      template = 'views/predict.html'
+      context = {
+        'form': form,
+      }
+      return render(request, template, context)
