@@ -175,8 +175,11 @@ def processing(request):
     # Confusion Matrix
     cm = confusion_matrix(y_test, y_predict)
     accuracy = accuracy_score(y_test, y_predict)
+    accuracy = round(accuracy) * 100
     precision = precision_score(y_test, y_predict)
+    precision = round(precision) * 100
     recall = recall_score(y_test, y_predict)
+    recall = round(recall) * 100
 
     #output X_train
     json_X_train = X_train.reset_index().to_json(orient='records')
