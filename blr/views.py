@@ -6,6 +6,7 @@ from .functions import handle_uploaded_file
 
 import pandas as pd
 import numpy as np
+# from sklearn.externals import joblib
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split
@@ -138,22 +139,23 @@ def processing(request):
 
     # SSE
     # evaluasi kmeans
-    sse = []
-    index = range(1, 7)
-    for i in index:
-        kmeans = KMeans(n_clusters=i, random_state=42)
-        kmeans.fit(df)
-        sse_ = kmeans.inertia_
-        sse.append(sse_)
+    # sse = []
+    # index = range(1, 1)
+    # for i, nilai_sse in enumerate(sse):
+    #     print(i, nilai_sse)
+    #     kmeans = KMeans(n_clusters=i, random_state=42)
+    #     kmeans.fit(df)
+    #     sse_ = kmeans.inertia_
+    #     sse.append(sse_)
 
     # plot sse
-    dataset['sse']=sse
+    # dataset['sse']=sse
 
     # output SSE
-    result_sse = dataset.loc[:, ['Sekolah','class_new','sse']]
-    json_sse = result_sse.reset_index().to_json(orient='records')
-    result_json_sse = []
-    result_json_sse = json.loads(json_sse)
+    # result_sse = dataset.loc[:, ['Sekolah','class_new','sse']]
+    # json_sse = result_sse.reset_index().to_json(orient='records')
+    # result_json_sse = []
+    # result_json_sse = json.loads(json_sse)
 
     #  SVM
     svm_X = df[['people','technology','innovation','self_development']]
@@ -172,14 +174,17 @@ def processing(request):
     # Predict SVM
     y_predict = classifier.predict(X_test)
     
+    # Predict Features
+    features_predict = classifier.predict(df)
+    
     # Confusion Matrix
     cm = confusion_matrix(y_test, y_predict)
     accuracy = accuracy_score(y_test, y_predict)
-    accuracy = round(accuracy) * 100
+    accuracy = accuracy * 100
     precision = precision_score(y_test, y_predict)
-    precision = round(precision) * 100
+    precision = precision * 100
     recall = recall_score(y_test, y_predict)
-    recall = round(recall) * 100
+    recall = recall * 100
 
     #output X_train
     json_X_train = X_train.reset_index().to_json(orient='records')
@@ -203,10 +208,24 @@ def processing(request):
 
     # output y_predict
     y_predict_df = pd.DataFrame(y_predict)
-    y_predict_df = y_predict_df.replace([1, -1], ['Siap', 'Belum Siap'])
+    y_predict_df = y_predict_df.replace([1, -1], ['1 = Siap', ' -1 = Belum Siap'])
     json_y_predict = y_predict_df.reset_index().to_json(orient='records')
     result_json_y_predict = []
     result_json_y_predict = json.loads(json_y_predict)
+    
+    # output features_predict
+    # def parsing_result(request):
+    #   features_predict_df = pd.DataFrame(features_predict)
+    #   features_predict_df = features_predict_df.replace([1, -1], ['1 = Siap', ' -1 = Belum Siap'])
+    #   json_features_predict = features_predict_df.reset_index().to_json(orient='records')
+    #   result_json_features_predict = []
+    #   result_json_features_predict = json.loads(json_features_predict)
+      
+    #   template = 'view/result.html'
+    #   context = {
+    #     'result_json_features_predict': result_json_features_predict,
+    #   }
+    #   return render(request, template, context)
     
     # output svm
     # print(y_predict)
@@ -227,7 +246,7 @@ def processing(request):
       'df': df,
       'result_json_kmeans': result_json_kmeans,
       'json_detail_kmeans': json_detail_kmeans,
-      'result_json_sse': result_json_sse,
+      # 'result_json_sse': result_json_sse,
       'result_json_X_train': result_json_X_train,
       'result_json_y_train': result_json_y_train,
       'result_json_X_test': result_json_X_test,
@@ -243,37 +262,43 @@ def processing(request):
 
 def predict(request):
     if request.method == 'POST':
-      form = PredictForm(request.POST)
+      form = UploadFileForm(request.POST)
       if form.is_valid():
-        name = form.cleaned_data['name']
-        people = form.cleaned_data['people']
-        technology = form.cleaned_data['technology']
-        innovation = form.cleaned_data['innovation']
-        self_development = form.cleaned_data['self_development']
-        data_predict = {
-          'name': name,
-          'people': people,
-          'technology': technology,
-          'innovation': innovation,
-          'self_development': self_development,
-        }
-        df_predict = pd.DataFrame(data_predict, index=[0])
+        # name = form.cleaned_data['name']
+        # people = form.cleaned_data['people']
+        # technology = form.cleaned_data['technology']
+        # innovation = form.cleaned_data['innovation']
+        # self_development = form.cleaned_data['self_development']
+        # data_predict = {
+        #   'name': name,
+        #   'people': people,
+        #   'technology': technology,
+        #   'innovation': innovation,
+        #   'self_development': self_development,
+        # }
+        # df_predict = pd.DataFrame(data_predict, index=[0])
+        
+        scaled_df_predict = MinMaxScaler()
 
-        json_data_predict = df_predict.reset_index().to_json(orient='records')
-        result_json_data_predict = []
-        result_json_data_predict = json.loads(json_data_predict)
+        # json_data_predict = df_predict.reset_index().to_json(orient='records')
+        # result_json_data_predict = []
+        # result_json_data_predict = json.loads(json_data_predict)
         # print(df_predict)
         template = 'views/result.html'
         context = {
-          'result_json_data_predict': result_json_data_predict,
+          # 'result_json_data_predict': result_json_data_predict,
         }
       messages.success(request, 'Form Submitted Successfully!')
       return render(request, template, context)
 
     else:
-      form = PredictForm()
+      form = UploadFileForm()
       template = 'views/predict.html'
       context = {
         'form': form,
       }
       return render(request, template, context)
+
+# def result(request):
+#     template = 'views/result.html'
+#     return render(request, template)

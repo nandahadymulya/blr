@@ -1,5 +1,4 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="container">
   <div class="row py-4">
     <div class="col-md-12">
@@ -7,7 +6,7 @@
       <p class="text-center fw-light">K-Means Algorithm & Support Vector Machines with Confusion Matrix</p>
     </div>
   </div>
-  <div class="row">
+  <div class="row py-4">
     <div class="col-md-12 mb-3">
       <h4>K-Means</h4>
       <div class="table-responsive">
@@ -161,16 +160,16 @@
           </div>
         </div>
       </div>
-      <!-- <div class="row">
+      <div class="row">
         <div class="col-md-9">
           <div class="table-responsive">
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th colspan="5" class="text-center fw-bold">Predict New Data</th>
+                  <th colspan="5" class="text-center fw-bold">Predict Result</th>
                 </tr>
                 <tr>
-                  <th>Sekolah</th>
+                  <th>Index</th>
                   <th>People</th>
                   <th>Innovation</th>
                   <th>Technology</th>
@@ -178,10 +177,13 @@
                 </tr>
               </thead>
               <tbody>
-                {% for i in predict %}
+                {% for i in result_json_X_test %}
                 <tr>
-                  <td>{{ i.sekolah }}</td>
-                  <td>{{ i.predict_label }}</td>
+                  <td>{{ i.index }}</td>
+                  <td>{{ i.people }}</td>
+                  <td>{{ i.technology }}</td>
+                  <td>{{ i.innovation }}</td>
+                  <td>{{ i.self_development }}</td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -193,27 +195,25 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th class="text-center fw-bold">Predict</th>
+                  <th class="text-center">Predict</th>
                 </tr>
                 <tr>
-                  <th>Predict Cluster Label</th>
+                  <th class="text-center">Predict Cluster Label</th>
                 </tr>
               </thead>
               <tbody>
-                {% for i in predict %}
+                {% for i in result_json_y_predict %}
                 <tr>
-                  <td>{{ i.sekolah }}</td>
-                  <td>{{ i.predict_label }}</td>
+                  <td>{{ i.0 }}</td>
                 </tr>
                 {% endfor %}
               </tbody>
             </table>
           </div>
         </div>
-      </div> -->
+      </div>
     </div>
-  </div>
-  <div class="row">
+    <div>{{result_json_features_predict}}</div>
     <div class="col-md-12 mb-3">
       <h4>Confusion Matrix</h4>
       <div class="table-responsive">
@@ -254,6 +254,11 @@
         </table>
       </div>
     </div>
+    <!-- Button to Data Cleaning -->
+    {% comment %}
+    <div class="col-md-12 d-flex justify-content-center pb-md-5"><a class="btn btn-dark" href="{% url 'predict' %}">Predict New Data</a></div>
+    {% endcomment %}
   </div>
+  <div class="row"></div>
 </div>
 {% endblock content %}
